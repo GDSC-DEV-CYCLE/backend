@@ -17,4 +17,8 @@ public class PostService {
     public Long createPost(CreatePostDto dto) {
         return postRepository.save(dto.toEntity()).getId();
     }
+
+    public void deletePost(Long id) {
+        postRepository.deleteById(id);
+    }
 }
