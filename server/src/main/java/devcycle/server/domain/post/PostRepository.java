@@ -1,4 +1,4 @@
-package devcycle.server.domain;
+package devcycle.server.domain.post;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,5 +1,6 @@
-package devcycle.server.domain;
+package devcycle.server.domain.post;
 
+import devcycle.server.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 

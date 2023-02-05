@@ -1,6 +1,6 @@
 package devcycle.server.dto;
 
-import devcycle.server.domain.Post;
+import devcycle.server.domain.post.Post;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
