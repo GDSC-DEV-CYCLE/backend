@@ -1,4 +1,4 @@
-# ??? ??
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,7 +15,6 @@ spring:
     ansi:
       enabled: always
 
-# ?? ?? ??
 logging:
   level:
     root: debug
@@ -24,3 +23,6 @@ logging:
         type:
           descriptor:
             sql: trace
+
+jwt:
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
