@@ -14,6 +14,10 @@ public class Post {
 
     private String title;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     public Post(String title) {
         this.title = title;
