@@ -1,4 +1,4 @@
-package devcycle.server.dto;
+package devcycle.server.dto.post;
 
 import devcycle.server.domain.post.Post;
 import lombok.Builder;

@@ -1,9 +1,7 @@
 package devcycle.server.controller;
 
-import devcycle.server.domain.post.Post;
-import devcycle.server.dto.CreatePostDto;
+import devcycle.server.dto.post.CreatePostDto;
 import devcycle.server.service.PostService;
-import devcycle.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
