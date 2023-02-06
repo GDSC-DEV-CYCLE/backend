@@ -1,7 +1,6 @@
 package devcycle.server.dto.user;
 
 import devcycle.server.domain.user.User;
-import devcycle.server.domain.user.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
