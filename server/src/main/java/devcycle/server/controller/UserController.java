@@ -35,4 +35,11 @@ public class UserController {
     public String test() {
         return "test success";
     }
+
+    @PostMapping("/signout")
+    public String signout() {
+        // 로그아웃 실행
+        userService.signout();
+        return "success";
+    }
 }
