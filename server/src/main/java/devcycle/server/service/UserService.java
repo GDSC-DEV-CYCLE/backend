@@ -6,8 +6,11 @@ import devcycle.server.domain.user.UserRepository;
 import devcycle.server.dto.user.LoginDto;
 import devcycle.server.dto.user.SignupRequestDto;
 import devcycle.server.dto.user.TokenInfo;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.security.SecurityUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -16,8 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -26,6 +32,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate redisTemplate;
 
     public User signup(SignupRequestDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -53,6 +60,8 @@ public class UserService {
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
+        // 4. RefreshToken Redis 저장
+        redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpiration());
         return tokenInfo;
     }
 
@@ -63,7 +72,23 @@ public class UserService {
             throw new RuntimeException("로그인하지 않았습니다.");
         }
         String accessToken = (String) authentication.getCredentials();
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
         userRepository.deleteByEmail(email);
+    }
+
+    public void logout(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").substring(7);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+            redisTemplate.delete("RT:" + authentication.getName());
+        }
+        Long expiration = jwtTokenProvider.getExpiration(accessToken);
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
     }
 
 }
