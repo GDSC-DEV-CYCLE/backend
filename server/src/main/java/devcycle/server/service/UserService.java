@@ -7,12 +7,16 @@ import devcycle.server.dto.user.LoginDto;
 import devcycle.server.dto.user.SignupRequestDto;
 import devcycle.server.dto.user.TokenInfo;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Transactional
@@ -23,12 +27,12 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public User signup(SignupRequestDto dto) throws Exception {
+    public User signup(SignupRequestDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new Exception("이미 존재하는 이메일입니다.");
+            throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
         if (!dto.getPassword().equals(dto.getCheckPassword())) {
-            throw new Exception("비밀번호가 일치하지 않습니다.");
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
         User user = dto.toEntity();
         user.encodePassword(passwordEncoder);
@@ -50,6 +54,16 @@ public class UserService {
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
         return tokenInfo;
+    }
+
+    public void signout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        if (Objects.equals(email, "anonymousUser")) {
+            throw new RuntimeException("로그인하지 않았습니다.");
+        }
+        String accessToken = (String) authentication.getCredentials();
+        userRepository.deleteByEmail(email);
     }
 
 }

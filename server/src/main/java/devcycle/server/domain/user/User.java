@@ -4,12 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
@@ -23,15 +26,13 @@ public class User implements UserDetails {
     private String password;
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private String role;
 
     @Builder
-    public User(String email, String password, String name, UserRole role) {
+    public User(String email, String password, String name) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
@@ -39,20 +40,16 @@ public class User implements UserDetails {
     }
 
     public void updateRole() {
-        role = UserRole.USER;
+        this.role = "ROLE_USER";
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(new GrantedAuthority() {
-                        @Override
-                        public String getAuthority() {
-                            return role.toString();
-                        }
-                    }
-        );
-        return null;
+        List<String> authorities = new ArrayList<>();
+        authorities.add(this.role);
+        return authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override

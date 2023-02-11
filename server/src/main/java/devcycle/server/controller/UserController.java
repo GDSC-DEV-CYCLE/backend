@@ -1,9 +1,6 @@
 package devcycle.server.controller;
 
-import devcycle.server.config.JwtTokenProvider;
 import devcycle.server.domain.user.User;
-import devcycle.server.domain.user.UserRepository;
-import devcycle.server.domain.user.UserRole;
 import devcycle.server.dto.user.LoginDto;
 import devcycle.server.dto.user.SignupRequestDto;
 import devcycle.server.dto.user.TokenInfo;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -39,5 +34,12 @@ public class UserController {
     @GetMapping("/test")
     public String test() {
         return "test success";
+    }
+
+    @PostMapping("/signout")
+    public String signout() {
+        // 로그아웃 실행
+        userService.signout();
+        return "success";
     }
 }
