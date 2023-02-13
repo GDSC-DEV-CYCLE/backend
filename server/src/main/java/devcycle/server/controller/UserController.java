@@ -4,6 +4,7 @@ import devcycle.server.domain.user.User;
 import devcycle.server.dto.user.LoginDto;
 import devcycle.server.dto.user.SignupRequestDto;
 import devcycle.server.dto.user.TokenInfo;
+import devcycle.server.dto.user.TokenRequestDto;
 import devcycle.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,5 +50,11 @@ public class UserController {
     public ResponseEntity<Boolean> logout(HttpServletRequest request) {
         userService.logout(request);
         return ResponseEntity.ok().body(true);
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenInfo> reissue(@RequestBody TokenRequestDto dto) {
+        TokenInfo tokenInfo = userService.reissue(dto);
+        return ResponseEntity.ok().body(tokenInfo);
     }
 }

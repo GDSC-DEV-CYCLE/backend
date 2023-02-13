@@ -6,6 +6,7 @@ import devcycle.server.domain.user.UserRepository;
 import devcycle.server.dto.user.LoginDto;
 import devcycle.server.dto.user.SignupRequestDto;
 import devcycle.server.dto.user.TokenInfo;
+import devcycle.server.dto.user.TokenRequestDto;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -61,7 +63,7 @@ public class UserService {
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
         // 4. RefreshToken Redis 저장
-        redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpiration());
+        redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpiration(), TimeUnit.MILLISECONDS);
         return tokenInfo;
     }
 
@@ -89,6 +91,24 @@ public class UserService {
         }
         Long expiration = jwtTokenProvider.getExpiration(accessToken);
         redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+    }
+
+    public TokenInfo reissue(TokenRequestDto dto) {
+        if (!jwtTokenProvider.validateToken(dto.getRefreshToken())) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(dto.getAccessToken());
+        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        if (ObjectUtils.isEmpty(refreshToken)) {
+            throw new RuntimeException("로그아웃된 유저입니다.");
+        }
+        if (!refreshToken.equals(dto.getRefreshToken())) {
+            throw new RuntimeException("토큰 정보가 일치하지 않습니다.");
+        }
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+        redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpiration(),TimeUnit.MILLISECONDS);
+
+        return tokenInfo;
     }
 
 }
