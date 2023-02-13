@@ -26,8 +26,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signup").permitAll()
-                .antMatchers("/test", "/signout", "/logout").hasRole("USER")
+                .antMatchers("/auth/test", "/auth/signout", "auth/logout", "/auth/reissue").hasRole("USER")
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class);
         return http.build();

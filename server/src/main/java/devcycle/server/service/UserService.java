@@ -3,10 +3,7 @@ package devcycle.server.service;
 import devcycle.server.config.JwtTokenProvider;
 import devcycle.server.domain.user.User;
 import devcycle.server.domain.user.UserRepository;
-import devcycle.server.dto.user.LoginDto;
-import devcycle.server.dto.user.SignupRequestDto;
-import devcycle.server.dto.user.TokenInfo;
-import devcycle.server.dto.user.TokenRequestDto;
+import devcycle.server.dto.user.*;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -111,4 +111,12 @@ public class UserService {
         return tokenInfo;
     }
 
+    public List<String> findEmailByNameAndBirth(FindEmailRequestDto dto) {
+        List<User> userList = userRepository.findByNameAndBirth(dto.getName(), dto.getBirth());
+        if (userList.isEmpty()) {
+            throw new RuntimeException("회원정보가 존재하지 않습니다.");
+        }
+        List<String> emailList = userList.stream().map(User::getEmail).collect(Collectors.toList());
+        return emailList;
+    }
 }

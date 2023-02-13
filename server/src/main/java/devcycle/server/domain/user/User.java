@@ -25,14 +25,15 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String name;
-
+    private String birth;
     private String role;
 
     @Builder
-    public User(String email, String password, String name) {
+    public User(String email, String password, String name, String birth) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.birth = birth;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
