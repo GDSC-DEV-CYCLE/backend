@@ -44,6 +44,10 @@ public class User implements UserDetails {
         this.role = "ROLE_USER";
     }
 
+    public void setTempPassword(PasswordEncoder passwordEncoder, String tempPassword) {
+        password = passwordEncoder.encode(tempPassword);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> authorities = new ArrayList<>();
