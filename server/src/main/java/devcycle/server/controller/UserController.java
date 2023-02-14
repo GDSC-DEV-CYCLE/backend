@@ -24,7 +24,6 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    // 로그인
     @PostMapping("/login")
     public TokenInfo login(@RequestBody LoginDto dto) {
         return userService.login(dto);
@@ -58,5 +57,11 @@ public class UserController {
     public ResponseEntity<List<String>> findEmail(@RequestBody FindEmailRequestDto dto) {
         List<String> emailList = userService.findEmailByNameAndBirth(dto);
         return ResponseEntity.ok().body(emailList);
+    }
+
+    @PostMapping("/find/pw")
+    public ResponseEntity<Boolean> findPassword(@RequestBody FindPasswordRequestDto dto) {
+        userService.findPasswordByEmailAndName(dto);
+        return ResponseEntity.ok().body(true);
     }
 }
