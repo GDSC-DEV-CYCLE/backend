@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +43,11 @@ public class UserController {
         // 로그아웃 실행
         userService.signout();
         return "success";
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Boolean> logout(HttpServletRequest request) {
+        userService.logout(request);
+        return ResponseEntity.ok().body(true);
     }
 }
