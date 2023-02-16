@@ -64,4 +64,9 @@ public class UserController {
         userService.findPasswordByEmailAndName(dto);
         return ResponseEntity.ok().body(true);
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserInfo> getUserInfo(HttpServletRequest request) {
+        return ResponseEntity.ok().body(userService.getUserInfo(request));
+    }
 }

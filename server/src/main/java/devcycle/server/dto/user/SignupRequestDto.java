@@ -13,14 +13,16 @@ public class SignupRequestDto {
     private String checkPassword;
     private String name;
     private String birth;
+    private String job;
 
     @Builder
-    public SignupRequestDto(String email, String password, String checkPassword, String name, String birth) {
+    public SignupRequestDto(String email, String password, String checkPassword, String name, String birth, String job) {
         this.email = email;
         this.password = password;
         this.checkPassword = checkPassword;
         this.name = name;
         this.birth = birth;
+        this.job = job;
     }
 
     public User toEntity() {

@@ -158,4 +158,19 @@ public class UserService {
 
         return stringBuilder.toString();
     }
+
+    public UserInfo getUserInfo(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").substring(7);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        User user;
+        try {
+            user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        } catch (Exception e) {
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+        return UserInfo.builder().name(user.getName()).email(user.getEmail()).birth(user.getBirth()).job(user.getJob()).build();
+    }
 }

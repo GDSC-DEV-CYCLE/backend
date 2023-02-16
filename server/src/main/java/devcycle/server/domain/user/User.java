@@ -26,6 +26,7 @@ public class User implements UserDetails {
     private String password;
     private String name;
     private String birth;
+    private String job;
     private String role;
 
     @Builder
