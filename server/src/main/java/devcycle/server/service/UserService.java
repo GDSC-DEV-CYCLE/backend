@@ -21,10 +21,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -130,7 +127,7 @@ public class UserService {
             throw new RuntimeException("회원정보가 존재하지 않습니다.");
         }
         String tempPassword = getTempPassword(10);
-        user.get().setTempPassword(passwordEncoder, tempPassword);
+        user.get().changePassword(passwordEncoder, tempPassword);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(dto.getEmail());
         message.setSubject("[dev.cycle] 임시 비밀번호 안내");
@@ -172,5 +169,23 @@ public class UserService {
             throw new RuntimeException("존재하지 않는 회원입니다.");
         }
         return UserInfo.builder().name(user.getName()).email(user.getEmail()).birth(user.getBirth()).job(user.getJob()).build();
+    }
+
+    public void changePassword(Map<String, String> requestHeader, ChangePasswordDto dto) {
+        String accessToken = requestHeader.get("authorization").substring(7);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        User user;
+        try {
+            user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        } catch (Exception e) {
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+        if (!dto.getPassword().equals(dto.getCheckPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+        user.changePassword(passwordEncoder, dto.getPassword());
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -68,5 +69,11 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<UserInfo> getUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok().body(userService.getUserInfo(request));
+    }
+
+    @PostMapping("/change/pw")
+    public ResponseEntity<Boolean> changePassword(@RequestHeader Map<String, String> requestHeader, @RequestBody ChangePasswordDto dto) {
+        userService.changePassword(requestHeader, dto);
+        return ResponseEntity.ok().body(true);
     }
 }
