@@ -25,7 +25,7 @@ public class Post {
     private String content;
 
     @CreatedDate
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false, nullable = true)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
@@ -37,7 +37,10 @@ public class Post {
 
 
     @Builder
-    public Post(String title) {
+    public Post(String title, String content, PostType postType) {
         this.title = title;
+        this.content = content;
+        this.postType = postType;
+
     }
 }
