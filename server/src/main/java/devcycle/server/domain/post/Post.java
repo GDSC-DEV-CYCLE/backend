@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +22,10 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column
     private String title;
 
+    @Column
     private String content;
 
     @CreatedDate
@@ -29,11 +33,14 @@ public class Post {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column
     private LocalDateTime updatedAt;
 
+    @Column
     private PostType postType;
 
-    private Integer view;
+    @Column(columnDefinition = "integer default 0")
+    private Integer view = 0;
 
 
     @Builder
@@ -41,6 +48,5 @@ public class Post {
         this.title = title;
         this.content = content;
         this.postType = postType;
-
     }
 }

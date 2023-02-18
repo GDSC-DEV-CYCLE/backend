@@ -1,5 +1,6 @@
 package devcycle.server.service;
 
+import devcycle.server.domain.post.Post;
 import devcycle.server.domain.post.PostRepository;
 import devcycle.server.dto.post.CreatePostDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Long createPost(CreatePostDto dto) {
-        return postRepository.save(dto.toEntity()).getId();
+    public Post createPost(CreatePostDto dto) throws Exception {
+        Post post = dto.toEntity();
+        postRepository.save(post);
+        return post;
     }
 
     public void deletePost(Long id) {
