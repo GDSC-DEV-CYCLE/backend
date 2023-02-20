@@ -30,11 +30,12 @@ public class User implements UserDetails {
     private String role;
 
     @Builder
-    public User(String email, String password, String name, String birth) {
+    public User(String email, String password, String name, String birth, String job) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.birth = birth;
+        this.job = job;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
@@ -45,10 +46,9 @@ public class User implements UserDetails {
         this.role = "ROLE_USER";
     }
 
-    public void setTempPassword(PasswordEncoder passwordEncoder, String tempPassword) {
+    public void changePassword(PasswordEncoder passwordEncoder, String tempPassword) {
         password = passwordEncoder.encode(tempPassword);
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> authorities = new ArrayList<>();
