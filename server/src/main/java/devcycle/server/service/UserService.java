@@ -40,7 +40,7 @@ public class UserService {
     private final RedisTemplate redisTemplate;
     private final JavaMailSender javaMailSender;
 
-    public User signup(SignupRequestDto dto) {
+    public void signup(SignupRequestDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
@@ -51,7 +51,6 @@ public class UserService {
         user.encodePassword(passwordEncoder);
         user.updateRole();
         userRepository.save(user);
-        return user;
     }
 
     public TokenInfo login(LoginDto dto) {
@@ -71,16 +70,13 @@ public class UserService {
         return tokenInfo;
     }
 
-    public void signout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        if (Objects.equals(email, "anonymousUser")) {
-            throw new RuntimeException("로그인하지 않았습니다.");
-        }
-        String accessToken = (String) authentication.getCredentials();
+    public void signout(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").substring(7);
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new JwtException("유효한 토큰이 아닙니다.");
         }
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        String email = authentication.getName();
         userRepository.deleteByEmail(email);
     }
 
@@ -157,5 +153,20 @@ public class UserService {
         }
 
         return stringBuilder.toString();
+    }
+
+    public UserInfo getUserInfo(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").substring(7);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        User user;
+        try {
+            user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        } catch (Exception e) {
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+        return UserInfo.builder().name(user.getName()).email(user.getEmail()).birth(user.getBirth()).job(user.getJob()).build();
     }
 }

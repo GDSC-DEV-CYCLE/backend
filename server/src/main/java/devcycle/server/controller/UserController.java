@@ -19,9 +19,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody SignupRequestDto dto) throws Exception {
-        User user = userService.signup(dto);
-        return ResponseEntity.ok().body(user);
+    public ResponseEntity<Boolean> signup(@RequestBody SignupRequestDto dto) throws Exception {
+        userService.signup(dto);
+        return ResponseEntity.ok().body(true);
     }
 
     @PostMapping("/login")
@@ -29,16 +29,11 @@ public class UserController {
         return userService.login(dto);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test success";
-    }
-
     @PostMapping("/signout")
-    public String signout() {
-        // 로그아웃 실행
-        userService.signout();
-        return "success";
+    public ResponseEntity<Boolean> signout(HttpServletRequest request) {
+        userService.logout(request);
+        userService.signout(request);
+        return ResponseEntity.ok().body(true);
     }
 
     @PostMapping("/logout")
@@ -63,5 +58,10 @@ public class UserController {
     public ResponseEntity<Boolean> findPassword(@RequestBody FindPasswordRequestDto dto) {
         userService.findPasswordByEmailAndName(dto);
         return ResponseEntity.ok().body(true);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserInfo> getUserInfo(HttpServletRequest request) {
+        return ResponseEntity.ok().body(userService.getUserInfo(request));
     }
 }
