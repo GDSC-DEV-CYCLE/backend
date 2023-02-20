@@ -8,7 +8,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,11 +26,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "EMAIL_IS_MANDATORY")
     private String email;
+
+    @NotBlank(message = "PASSWORD_IS_MANDATORY")
     private String password;
+
+    @NotBlank(message = "NAME_IS_MANDATORY")
     private String name;
+
+    @NotBlank(message = "BIRTH_IS_MANDATORY")
     private String birth;
+
+    @NotBlank(message = "JOB_IS_MANDATORY")
     private String job;
+
     private String role;
 
     @Builder
@@ -49,6 +63,7 @@ public class User implements UserDetails {
     public void changePassword(PasswordEncoder passwordEncoder, String tempPassword) {
         password = passwordEncoder.encode(tempPassword);
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> authorities = new ArrayList<>();
