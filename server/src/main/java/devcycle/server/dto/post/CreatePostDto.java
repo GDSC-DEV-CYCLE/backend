@@ -2,15 +2,10 @@ package devcycle.server.dto.post;
 
 import devcycle.server.domain.post.Post;
 import devcycle.server.domain.post.PostType;
-import devcycle.server.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.Column;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -21,11 +16,14 @@ public class CreatePostDto {
 
     private PostType postType;
 
+    private String hashtags;
+
     @Builder
-    public CreatePostDto(String title, String content, PostType postType) {
+    public CreatePostDto(String title, String content, PostType postType, List<String> hashtags) {
         this.title = title;
         this.content = content;
         this.postType = postType;
+        this.hashtags = hashtags.toString();
     }
 
     public Post toEntity() {
@@ -33,6 +31,7 @@ public class CreatePostDto {
                 .title(title)
                 .content(content)
                 .postType(postType)
+                .hashtags(hashtags)
                 .build();
     }
 }
