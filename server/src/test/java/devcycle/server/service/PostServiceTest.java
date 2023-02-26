@@ -1,7 +1,7 @@
 package devcycle.server.service;
 
-import devcycle.server.domain.PostRepository;
-import devcycle.server.dto.CreatePostDto;
+import devcycle.server.domain.post.PostRepository;
+import devcycle.server.dto.post.CreatePostDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
