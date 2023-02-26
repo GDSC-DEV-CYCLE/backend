@@ -11,10 +11,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FindPasswordRequestDto {
-    @NotBlank(message = "EMAIL_IS_MANDATORY")
-    String email;
+public class ChangePasswordDto {
+    @NotBlank(message = "PASSWORD_IS_MANDATORY")
+    String password;
 
-    @NotBlank(message = "NAME_IS_MANDATORY")
-    String name;
+    @NotBlank(message = "PASSWORD_IS_MANDATORY")
+    String checkPassword;
 }
