@@ -1,7 +1,6 @@
 package devcycle.server.controller;
 
-import devcycle.server.domain.comment.Comment;
-import devcycle.server.dto.CreateCommentDto;
+import devcycle.server.dto.comment.CreateCommentDto;
 import devcycle.server.dto.comment.GetCommentDto;
 import devcycle.server.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -28,4 +27,6 @@ public class CommentController {
     public ResponseEntity<List<GetCommentDto>> getCommentList(@PathVariable Long postId) {
         return ResponseEntity.ok().body(commentService.getCommentList(postId));
     }
+
+    @
 }
