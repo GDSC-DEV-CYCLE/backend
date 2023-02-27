@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +60,24 @@ public class CommentService {
             commentDtoList.add(GetCommentDto.builder().id(comment.getId()).userName(comment.getUser().getName()).content(comment.getContent()).build());
         }
         return commentDtoList;
+    }
+
+    public void deleteComment(@RequestHeader Map<String, String> requestHeader, Long commentId) {
+        String accessToken = requestHeader.get("authorization").substring(7);
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new JwtException("유효한 토큰이 아닙니다.");
+        }
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        User user;
+        try {
+            user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        } catch (Exception e) {
+            throw new RuntimeException("존재하지 않는 회원입니다.");
+        }
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        if (!comment.getUser().equals(user)) {
+            throw new RuntimeException("댓글 작성자가 아닙니다.");
+        }
+        commentRepository.delete(comment);
     }
 }
