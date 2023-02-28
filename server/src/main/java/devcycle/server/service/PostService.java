@@ -30,4 +30,8 @@ public class PostService {
     public List<Post> getPostList() throws Exception {
         return postRepository.findAll();
     }
+
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow();
+    }
 }

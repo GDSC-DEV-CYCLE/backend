@@ -8,10 +8,7 @@ import devcycle.server.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +28,10 @@ public class PostController {
     public ResponseEntity<Post> createPost(@RequestBody CreatePostDto dto) throws Exception {
         Post post = postService.createPost(dto);
         return ResponseEntity.ok().body(post);
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<Post> getPost(@PathVariable Long postId) {
+        return ResponseEntity.ok().body(postService.getPost(postId));
     }
 }
