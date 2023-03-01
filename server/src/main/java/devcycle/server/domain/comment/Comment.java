@@ -1,6 +1,6 @@
 package devcycle.server.domain.comment;
 
-import devcycle.server.domain.Post;
+import devcycle.server.domain.post.Post;
 import devcycle.server.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

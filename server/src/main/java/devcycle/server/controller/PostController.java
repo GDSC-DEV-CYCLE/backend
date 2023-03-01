@@ -7,6 +7,9 @@ import devcycle.server.dto.user.SignupRequestDto;
 import devcycle.server.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +22,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/post/list")
-    public ResponseEntity<List<Post>> getPostList() throws Exception {
-        List<Post> postList = postService.getPostList();
+    public ResponseEntity<Page<Post>> getPostList(@PageableDefault Pageable pageable) throws Exception {
+        Page<Post> postList = postService.getPostList(pageable);
         return ResponseEntity.ok().body(postList);
     }
 
