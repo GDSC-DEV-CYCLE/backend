@@ -1,11 +1,10 @@
 package devcycle.server.service;
 
 import devcycle.server.config.JwtTokenProvider;
-import devcycle.server.domain.Post;
-import devcycle.server.domain.PostRepository;
 import devcycle.server.domain.comment.Comment;
 import devcycle.server.domain.comment.CommentRepository;
-import devcycle.server.domain.like.LikesRepository;
+import devcycle.server.domain.post.Post;
+import devcycle.server.domain.post.PostRepository;
 import devcycle.server.domain.user.User;
 import devcycle.server.domain.user.UserRepository;
 import devcycle.server.dto.comment.GetCommentDto;

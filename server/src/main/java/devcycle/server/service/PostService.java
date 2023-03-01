@@ -4,6 +4,8 @@ import devcycle.server.domain.post.Post;
 import devcycle.server.domain.post.PostRepository;
 import devcycle.server.dto.post.CreatePostDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +29,8 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public List<Post> getPostList() throws Exception {
-        return postRepository.findAll();
+    public Page<Post> getPostList(Pageable pageable) throws Exception {
+        return postRepository.findAll(pageable);
     }
 
     public Post getPost(Long postId) {
